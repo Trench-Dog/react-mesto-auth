@@ -9,6 +9,7 @@ import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import ConfirmationPopup from './ConfirmationPopup';
+import { Routes, Route } from 'react-router-dom';
 
 export default function App() {
     const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
@@ -158,6 +159,10 @@ export default function App() {
         <CurrentUserContext.Provider value={currentUser}>
             <div className="page">
                 <Header />
+                <Routes>
+                    <Route path="/sign-up" />
+                    <Route path="/sign-up" />
+                </Routes>
                 <Main
                     onEditProfile={handleEditProfileClick}
                     onAddPlace={handleAddPlaceClick}
