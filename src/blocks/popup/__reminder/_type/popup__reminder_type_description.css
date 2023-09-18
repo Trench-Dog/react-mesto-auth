@@ -1,0 +1,8 @@
+.popup__reminder_type_description {
+    margin-bottom: 11px;
+}
+@media screen and (max-width: 600px) {
+    .popup__reminder_type_description {
+        margin-bottom: 15px;
+    }
+}

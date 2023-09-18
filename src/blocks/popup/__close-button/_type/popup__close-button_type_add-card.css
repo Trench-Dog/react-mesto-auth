@@ -1,0 +1,20 @@
+.popup__close-button_type_add-card {
+    width: 32px;
+    height: 32px;
+    position: relative;
+    bottom: 332px;
+    left: 438px;
+    border: none;
+    background: url(../../../../images/popup-close-icon.svg) no-repeat center / auto;
+    transition: opacity 0.5s ease 0.1s;
+    cursor: pointer;
+}
+@media screen and (max-width: 600px) {
+    .popup__close-button_type_add-card {
+        width: 20px;
+        height: 20px;
+        left: 262px;
+        bottom: 333px;
+        background-size: contain;
+    }
+}

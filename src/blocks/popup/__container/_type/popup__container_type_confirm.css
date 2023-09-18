@@ -1,0 +1,7 @@
+.popup__container_type_confirm {
+    width: 100%;
+    max-width: 430px;
+    background-color: #fff;
+    border-radius: 10px;
+    height: 181px;
+}

@@ -1,0 +1,11 @@
+.profile__avatar-editor {
+    width: 26px;
+    height: 26px;
+    position: relative;
+    left: 38%;
+    bottom: 64%;
+    visibility: hidden;
+}
+.profile__avatar:hover + .profile__avatar-editor {
+    visibility: visible;
+}

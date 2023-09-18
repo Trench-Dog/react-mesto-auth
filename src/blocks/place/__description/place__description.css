@@ -1,0 +1,29 @@
+.place__description {
+    max-width: 246px;
+    margin: 16px auto 0 21px;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+}
+@media screen and (max-width: 1240px) {
+    .place__description {
+        margin-left: auto;
+        max-width: 224px;
+    }
+}
+@media screen and (max-width: 768px) {
+    .place__description {
+        max-width: 250px;
+    }
+}
+@media screen and (max-width: 600px) {
+    .place__description {
+        max-width: 183px;
+    }
+}
+@media screen and (max-width: 425px) {
+    .place__description {
+        max-width: 250px;
+        margin-left: 21px;
+    }
+}

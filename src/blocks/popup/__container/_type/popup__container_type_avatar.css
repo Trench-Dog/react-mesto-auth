@@ -1,0 +1,8 @@
+.popup__container_type_avatar {
+    width: 100%;
+    max-width: 430px;
+    background-color: #fff;
+    min-height: 272px;
+    border-radius: 10px;
+    margin: 0;
+}

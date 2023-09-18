@@ -1,0 +1,19 @@
+.place {
+    max-width: 282px;
+    height: 361px;
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
+    border-radius: 10px;
+}
+@media screen and (max-width: 768px) and (min-width: 426px) {
+    .place {
+        max-width: 320px;
+        min-height: 361px;
+    }
+}
+@media screen and (max-width: 425px) {
+    .place {
+        width: 100%;
+    }
+}
