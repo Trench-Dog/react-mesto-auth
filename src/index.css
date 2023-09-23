@@ -37,7 +37,7 @@
 @import url(./blocks/popup/__container/_type/popup__container_type_avatar.css);
 @import url(./blocks/popup/__form/popup__form.css);
 @import url(./blocks/popup/__heading/popup__heading.css);
-@import url(./blocks/popup/__request/popup__request.css);
+@import url(./blocks/popup/__title/popup__title.css);
 @import url(./blocks/popup/__data/popup__data.css);
 @import url(./blocks/popup/__data/_type/popup__data_type_description.css);
 @import url(./blocks/popup/__data/_type/popup__data_type_link.css);
@@ -60,6 +60,8 @@
 @import url(./blocks/popup/__place-name/popup__place-name.css);
 @import url(./blocks/footer/footer.css);
 @import url(./blocks/footer/__copyright/footer__copyright.css);
+@import url(./blocks/entrance-form/entrance-form.css);
+@import url(./blocks/entrance-form/__title/entrance-form__title.css);
 body {
     min-height: 100%;
     background-color: #000000;

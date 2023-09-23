@@ -9,7 +9,10 @@ import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import ConfirmationPopup from './ConfirmationPopup';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import ProtectedRoute from './ProtectedRoute';
+import Login from './Login';
+import Register from './Register';
 
 export default function App() {
     const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
@@ -25,6 +28,7 @@ export default function App() {
     const [cards, setCards] = useState([]);
     const [deletedCardId, setDeletedCardId] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     useEffect(() => {
         Promise.all([api.getUserInfo(), api.getInitialCards()])
@@ -160,18 +164,32 @@ export default function App() {
             <div className="page">
                 <Header />
                 <Routes>
-                    <Route path="/sign-up" />
-                    <Route path="/sign-up" />
+                    <Route
+                        path="/sign-up"
+                        element={isLoggedIn ? <Navigate to="/" /> : <Register />}
+                    />
+                    <Route
+                        path="/sign-in"
+                        element={isLoggedIn ? <Navigate to="/" /> : <Login isLoading={isLoading} />}
+                    />
+                    <Route
+                        path="/"
+                        element={
+                            <ProtectedRoute isLoggedIn={isLoggedIn}>
+                                <Main
+                                    onEditProfile={handleEditProfileClick}
+                                    onAddPlace={handleAddPlaceClick}
+                                    onEditAvatar={handleEditAvatarClick}
+                                    onCardClick={handleCardClick}
+                                    onCardLike={handleCardLike}
+                                    onCardDelete={handleDeleteButtonClick}
+                                    cards={cards}
+                                />
+                                <Footer />
+                            </ProtectedRoute>
+                        }
+                    />
                 </Routes>
-                <Main
-                    onEditProfile={handleEditProfileClick}
-                    onAddPlace={handleAddPlaceClick}
-                    onEditAvatar={handleEditAvatarClick}
-                    onCardClick={handleCardClick}
-                    onCardLike={handleCardLike}
-                    onCardDelete={handleDeleteButtonClick}
-                    cards={cards}
-                />
                 <ImagePopup
                     className="popup popup_type_image"
                     card={selectedCard}
@@ -205,7 +223,6 @@ export default function App() {
                     onUpdateAvatar={handleUpdateAvatar}
                     isLoading={isLoading}
                 />
-                <Footer />
             </div>
         </CurrentUserContext.Provider>
     );
