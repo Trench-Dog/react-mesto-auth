@@ -13,12 +13,15 @@ import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute';
 import Login from './Login';
 import Register from './Register';
+import * as authApi from '../utils/AuthApi';
+import InfoTooltip from './InfoTooltip';
 
 export default function App() {
     const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
     const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false);
     const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
     const [isConfirmationPopupOpen, setConfirmationPopupOpen] = useState(false);
+    const [isStatusPopupOpen, setStatusPopupOpen] = useState(false);
     const [selectedCard, setSelectedCard] = useState({
         isOpen: false,
         link: '',
@@ -50,7 +53,8 @@ export default function App() {
             isConfirmationPopupOpen ||
             isEditAvatarPopupOpen ||
             isEditProfilePopupOpen ||
-            selectedCard
+            selectedCard ||
+            isStatusPopupOpen
         ) {
             document.addEventListener('keydown', onPushEsc);
         } else {
@@ -61,7 +65,8 @@ export default function App() {
         isConfirmationPopupOpen,
         isEditAvatarPopupOpen,
         isEditProfilePopupOpen,
-        selectedCard
+        selectedCard,
+        isStatusPopupOpen
     ]);
 
     function handleEditProfileClick() {
@@ -92,6 +97,7 @@ export default function App() {
         });
         setConfirmationPopupOpen(false);
         setDeletedCardId('');
+        setStatusPopupOpen(false);
     }
 
     function handleCardClick(card) {
@@ -158,6 +164,30 @@ export default function App() {
                 setIsLoading(false);
             });
     }
+    function handleRegister(password, email) {
+        setIsLoading(true);
+        authApi
+            .register(password, email)
+            .then(res => {
+                console.log(res);
+            })
+            .catch(err => alert(err))
+            .finally(() => {
+                setIsLoading(false);
+            });
+    }
+    function handleLogin(password, email) {
+        setIsLoading(true);
+        authApi
+            .login(password, email)
+            .then(res => {
+                console.log(res);
+            })
+            .catch(err => alert(err))
+            .finally(() => {
+                setIsLoading(false);
+            });
+    }
 
     return (
         <CurrentUserContext.Provider value={currentUser}>
@@ -166,11 +196,23 @@ export default function App() {
                 <Routes>
                     <Route
                         path="/sign-up"
-                        element={isLoggedIn ? <Navigate to="/" /> : <Register />}
+                        element={
+                            isLoggedIn ? (
+                                <Navigate to="/" />
+                            ) : (
+                                <Register isLoading={isLoading} onSubmit={handleRegister} replace />
+                            )
+                        }
                     />
                     <Route
                         path="/sign-in"
-                        element={isLoggedIn ? <Navigate to="/" /> : <Login isLoading={isLoading} />}
+                        element={
+                            isLoggedIn ? (
+                                <Navigate to="/" />
+                            ) : (
+                                <Login isLoading={isLoading} onSubmit={handleLogin} replace />
+                            )
+                        }
                     />
                     <Route
                         path="/"
@@ -222,6 +264,12 @@ export default function App() {
                     onClose={closeAllPopups}
                     onUpdateAvatar={handleUpdateAvatar}
                     isLoading={isLoading}
+                />
+                <InfoTooltip
+                    isOpen={isStatusPopupOpen}
+                    onClose={closeAllPopups}
+                    errorText={'Что-то пошло не так! Попробуйте ещё раз.'}
+                    successText={'Вы успешно зарегистрировались!'}
                 />
             </div>
         </CurrentUserContext.Provider>
