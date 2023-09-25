@@ -9,7 +9,7 @@ import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import ConfirmationPopup from './ConfirmationPopup';
-import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute';
 import Login from './Login';
 import Register from './Register';
@@ -17,6 +17,8 @@ import * as authApi from '../utils/AuthApi';
 import InfoTooltip from './InfoTooltip';
 
 export default function App() {
+    const navigate = useNavigate();
+    const location = useLocation();
     const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
     const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false);
     const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
@@ -33,16 +35,23 @@ export default function App() {
     const [isLoading, setIsLoading] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [email, setEmail] = useState('');
-    const navigate = useNavigate();
     const [isSuccess, setIsSuccess] = useState(false);
 
     useEffect(() => {
-        Promise.all([api.getUserInfo(), api.getInitialCards()])
-            .then(([userData, initialCards]) => {
-                setCurrentUser(userData);
-                setCards(initialCards);
-            })
-            .catch(err => alert(err));
+        if (isLoggedIn) {
+            Promise.all([api.getUserInfo(), api.getInitialCards()])
+                .then(([userData, initialCards]) => {
+                    setCurrentUser(userData);
+                    setCards(initialCards);
+                })
+                .catch(err => alert(err));
+        }
+    }, [isLoggedIn]);
+
+    useEffect(() => {
+        if (location.pathname !== '/sign-in') {
+            navigate('/sign-in');
+        }
     }, []);
 
     useEffect(() => {
@@ -178,12 +187,14 @@ export default function App() {
             .then(res => {
                 if (res.data) {
                     setIsSuccess(true);
-                } else {
-                    setIsSuccess(false);
                 }
                 setStatusPopupOpen(true);
             })
-            .catch(err => console.log(err))
+            .catch(err => {
+                setIsSuccess(false);
+                setStatusPopupOpen(true);
+                console.log(err);
+            })
             .finally(() => {
                 setIsLoading(false);
             });
@@ -197,12 +208,13 @@ export default function App() {
                     localStorage.setItem('jwt', res.token);
                     setEmail(email);
                     setIsLoggedIn(true);
-                } else {
-                    setIsSuccess(false);
-                    setStatusPopupOpen(true);
                 }
             })
-            .catch(err => console.log(err))
+            .catch(err => {
+                setIsSuccess(false);
+                setStatusPopupOpen(true);
+                console.log(err);
+            })
             .finally(() => {
                 setIsLoading(false);
             });
@@ -215,11 +227,14 @@ export default function App() {
     }
 
     function handleTokenCheck() {
-        const token = localStorage.getItem('jwt');
-        console.log(token);
-        if (token) {
-            authApi.checkToken(token).then(res => {
-                console.log(res);
+        const jwt = localStorage.getItem('jwt');
+        if (jwt) {
+            authApi.checkToken(jwt).then(res => {
+                if (res) {
+                    setEmail(res.data.email);
+                    setIsLoggedIn(true);
+                    navigate('/');
+                }
             });
         }
     }
@@ -227,7 +242,12 @@ export default function App() {
     return (
         <CurrentUserContext.Provider value={currentUser}>
             <div className="page">
-                <Header email={email} isLoggedIn={isLoggedIn} signOut={signOut} />
+                <Header
+                    email={email}
+                    isLoggedIn={isLoggedIn}
+                    onSignOut={signOut}
+                    location={location}
+                />
                 <Routes>
                     <Route
                         path="/sign-up"
