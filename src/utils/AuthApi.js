@@ -30,6 +30,18 @@ export const login = (password, email) => {
     });
 };
 
+export const checkToken = token => {
+    return fetch(`${baseUrl}/users/me`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+        }
+    }).then(res => {
+        return getResponseData(res);
+    });
+};
+
 function getResponseData(res) {
     if (!res.ok) {
         return Promise.reject(`Ошибка: ${res.status}`);

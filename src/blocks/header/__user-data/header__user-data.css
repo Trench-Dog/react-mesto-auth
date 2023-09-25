@@ -1,0 +1,7 @@
+.header__user-data {
+    height: 22px;
+    margin: 2px 0 auto auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}

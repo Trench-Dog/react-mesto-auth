@@ -32,6 +32,9 @@ export default function App() {
     const [deletedCardId, setDeletedCardId] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [email, setEmail] = useState('');
+    const navigate = useNavigate();
+    const [isSuccess, setIsSuccess] = useState(false);
 
     useEffect(() => {
         Promise.all([api.getUserInfo(), api.getInitialCards()])
@@ -68,6 +71,10 @@ export default function App() {
         selectedCard,
         isStatusPopupOpen
     ]);
+
+    useEffect(() => {
+        handleTokenCheck();
+    }, []);
 
     function handleEditProfileClick() {
         setEditProfilePopupOpen(true);
@@ -169,9 +176,14 @@ export default function App() {
         authApi
             .register(password, email)
             .then(res => {
-                console.log(res);
+                if (res.data) {
+                    setIsSuccess(true);
+                } else {
+                    setIsSuccess(false);
+                }
+                setStatusPopupOpen(true);
             })
-            .catch(err => alert(err))
+            .catch(err => console.log(err))
             .finally(() => {
                 setIsLoading(false);
             });
@@ -181,18 +193,41 @@ export default function App() {
         authApi
             .login(password, email)
             .then(res => {
-                console.log(res);
+                if (res.token) {
+                    localStorage.setItem('jwt', res.token);
+                    setEmail(email);
+                    setIsLoggedIn(true);
+                } else {
+                    setIsSuccess(false);
+                    setStatusPopupOpen(true);
+                }
             })
-            .catch(err => alert(err))
+            .catch(err => console.log(err))
             .finally(() => {
                 setIsLoading(false);
             });
     }
 
+    function signOut() {
+        setIsLoggedIn(false);
+        localStorage.removeItem('jwt');
+        navigate('/sign-in');
+    }
+
+    function handleTokenCheck() {
+        const token = localStorage.getItem('jwt');
+        console.log(token);
+        if (token) {
+            authApi.checkToken(token).then(res => {
+                console.log(res);
+            });
+        }
+    }
+
     return (
         <CurrentUserContext.Provider value={currentUser}>
             <div className="page">
-                <Header />
+                <Header email={email} isLoggedIn={isLoggedIn} signOut={signOut} />
                 <Routes>
                     <Route
                         path="/sign-up"
@@ -270,6 +305,7 @@ export default function App() {
                     onClose={closeAllPopups}
                     errorText={'Что-то пошло не так! Попробуйте ещё раз.'}
                     successText={'Вы успешно зарегистрировались!'}
+                    isSuccess={isSuccess}
                 />
             </div>
         </CurrentUserContext.Provider>

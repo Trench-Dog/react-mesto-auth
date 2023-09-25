@@ -1,0 +1,8 @@
+.entrance-form__link {
+    text-decoration: none;
+    color: white;
+    transition: opacity 0.5s ease 0.1s;
+}
+.entrance-form__link:hover {
+    opacity: 0.6;
+}

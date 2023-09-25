@@ -1,5 +1,6 @@
 import EntranceForm from './EntranceForm';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function Register(props) {
     const [email, setEmail] = useState('');
@@ -10,7 +11,15 @@ export default function Register(props) {
     function handlePasswordChange(evt) {
         setPassword(evt.target.value);
     }
-    const confirmation = <p className="entrance-form__confirmation">Уже зарегистрированы? Войти</p>;
+    const confirmation = (
+        <p className="entrance-form__confirmation">
+            Уже зарегистрированы?
+            <Link className="entrance-form__link" to="/sign-in">
+                {' '}
+                Войти
+            </Link>
+        </p>
+    );
     function handleSubmit(evt) {
         evt.preventDefault();
         if (!email || !password) {
@@ -20,7 +29,7 @@ export default function Register(props) {
     }
     return (
         <EntranceForm
-            title="Вход"
+            title="Регистрация"
             text={props.isLoading ? 'Выполняем регистрацию...' : 'Зарегистрироваться'}
             confirmation={confirmation}
             onSubmit={handleSubmit}
