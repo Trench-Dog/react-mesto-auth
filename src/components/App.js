@@ -38,15 +38,13 @@ export default function App() {
     const [isSuccess, setIsSuccess] = useState(false);
 
     useEffect(() => {
-        if (isLoggedIn) {
-            Promise.all([api.getUserInfo(), api.getInitialCards()])
-                .then(([userData, initialCards]) => {
-                    setCurrentUser(userData);
-                    setCards(initialCards);
-                })
-                .catch(err => alert(err));
-        }
-    }, [isLoggedIn]);
+        Promise.all([api.getUserInfo(), api.getInitialCards()])
+            .then(([userData, initialCards]) => {
+                setCurrentUser(userData);
+                setCards(initialCards);
+            })
+            .catch(err => alert(err));
+    }, []);
 
     useEffect(() => {
         if (location.pathname !== '/sign-in') {
