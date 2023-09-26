@@ -13,7 +13,7 @@ import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute';
 import Login from './Login';
 import Register from './Register';
-import * as authApi from '../utils/authApi';
+import * as apiAuth from '../utils/apiAuth';
 import InfoTooltip from './InfoTooltip';
 
 export default function App() {
@@ -175,7 +175,7 @@ export default function App() {
     }
     function handleRegister(password, email) {
         setIsLoading(true);
-        authApi
+        apiAuth
             .register(password, email)
             .then(res => {
                 if (res.data) {
@@ -194,7 +194,7 @@ export default function App() {
     }
     function handleLogin(password, email) {
         setIsLoading(true);
-        authApi
+        apiAuth
             .login(password, email)
             .then(res => {
                 if (res.token) {
@@ -222,7 +222,7 @@ export default function App() {
     function handleTokenCheck() {
         const jwt = localStorage.getItem('jwt');
         if (jwt) {
-            authApi
+            apiAuth
                 .checkToken(jwt)
                 .then(res => {
                     if (res) {
