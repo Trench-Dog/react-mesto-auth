@@ -15,7 +15,6 @@ export default function Register(props) {
         <p className="entrance-form__confirmation">
             Уже зарегистрированы?
             <Link className="entrance-form__link" to="/sign-in">
-                {' '}
                 Войти
             </Link>
         </p>

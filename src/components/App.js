@@ -3,22 +3,21 @@ import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
 import ImagePopup from './ImagePopup';
-import { api } from '../utils/Api';
+import { api } from '../utils/api';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import ConfirmationPopup from './ConfirmationPopup';
-import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute';
 import Login from './Login';
 import Register from './Register';
-import * as authApi from '../utils/AuthApi';
+import * as authApi from '../utils/authApi';
 import InfoTooltip from './InfoTooltip';
 
 export default function App() {
     const navigate = useNavigate();
-    const location = useLocation();
     const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
     const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false);
     const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
@@ -38,19 +37,15 @@ export default function App() {
     const [isSuccess, setIsSuccess] = useState(false);
 
     useEffect(() => {
-        Promise.all([api.getUserInfo(), api.getInitialCards()])
-            .then(([userData, initialCards]) => {
-                setCurrentUser(userData);
-                setCards(initialCards);
-            })
-            .catch(err => alert(err));
-    }, []);
-
-    useEffect(() => {
-        if (location.pathname !== '/sign-in') {
-            navigate('/sign-in');
+        if (isLoggedIn) {
+            Promise.all([api.getUserInfo(), api.getInitialCards()])
+                .then(([userData, initialCards]) => {
+                    setCurrentUser(userData);
+                    setCards(initialCards);
+                })
+                .catch(err => alert(err));
         }
-    }, []);
+    }, [isLoggedIn]);
 
     useEffect(() => {
         function onPushEsc(evt) {
@@ -227,26 +222,28 @@ export default function App() {
     function handleTokenCheck() {
         const jwt = localStorage.getItem('jwt');
         if (jwt) {
-            authApi.checkToken(jwt).then(res => {
-                if (res) {
-                    setEmail(res.data.email);
-                    setIsLoggedIn(true);
-                    navigate('/');
-                }
-            });
+            authApi
+                .checkToken(jwt)
+                .then(res => {
+                    if (res) {
+                        setEmail(res.data.email);
+                        setIsLoggedIn(true);
+                        navigate('/');
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                    localStorage.removeItem('jwt');
+                });
         }
     }
 
     return (
         <CurrentUserContext.Provider value={currentUser}>
             <div className="page">
-                <Header
-                    email={email}
-                    isLoggedIn={isLoggedIn}
-                    onSignOut={signOut}
-                    location={location}
-                />
+                <Header email={email} isLoggedIn={isLoggedIn} onSignOut={signOut} />
                 <Routes>
+                    <Route path="*" element={<Navigate to="/sign-in" />} />
                     <Route
                         path="/sign-up"
                         element={
@@ -321,8 +318,8 @@ export default function App() {
                 <InfoTooltip
                     isOpen={isStatusPopupOpen}
                     onClose={closeAllPopups}
-                    errorText={'Что-то пошло не так! Попробуйте ещё раз.'}
-                    successText={'Вы успешно зарегистрировались!'}
+                    errorText="Что-то пошло не так! Попробуйте ещё раз."
+                    successText="Вы успешно зарегистрировались!"
                     isSuccess={isSuccess}
                 />
             </div>

@@ -1,6 +1,7 @@
 import logo from '../images/header-logo.svg';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 export default function Header(props) {
+    const location = useLocation();
     return (
         <header className="header">
             <img className="header__logo" src={logo} alt="Логотип с надписью Место Россия" />
@@ -13,12 +14,12 @@ export default function Header(props) {
                         </button>
                     </>
                 ) : (
-                    (props.location.pathname === '/sign-up' && (
+                    (location.pathname === '/sign-up' && (
                         <Link to="/sign-in" className="header__link">
                             Войти
                         </Link>
                     )) ||
-                    (props.location.pathname === '/sign-in' && (
+                    (location.pathname === '/sign-in' && (
                         <Link to="/sign-up" className="header__link">
                             Регистрация
                         </Link>
